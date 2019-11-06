@@ -1,0 +1,9 @@
+.idea
+.env
+.DS_Store
+.vscode
+__pycache__/
+config/
+instagram/
+.env
+*.py[cod]
