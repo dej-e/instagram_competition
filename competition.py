@@ -65,13 +65,10 @@ def main():
     finalists = []
 
     for comment in comments:
-        user_followed = is_users_followed(comment, author_followers)
-        user_liked = is_user_liked(comment)
-
-        if not (user_followed and user_liked):
+        if not is_user_liked(comment):
             continue
 
-        if not is_user_tag_friends(bot, comment):
+        if not is_users_followed(comment, author_followers):
             continue
 
         username = comment['user']['username']
