@@ -71,6 +71,9 @@ def main():
         if not is_users_followed(comment, author_followers):
             continue
 
+        if not is_user_tag_friends(bot, comment):
+            continue
+
         username = comment['user']['username']
         finalists.append(username)
 
