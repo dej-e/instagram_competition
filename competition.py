@@ -5,16 +5,6 @@ import re
 import argparse
 
 
-def is_users_followed(comment, followed_users):
-    followed_user_id = str(comment['user_id'])
-    return followed_user_id in followed_users
-
-
-def is_user_liked(comment):
-    liked = 'comment_like_count'
-    return liked in comment and comment[liked] > 0
-
-
 def get_usernames_from_comment(comment):
     pattern = re.compile(
         r'(?:@)([A-Za-z0-9_]'
@@ -34,6 +24,16 @@ def is_user_tag_friends(bot, comment):
         if is_user_exists(bot, friend):
             return True
     return False
+
+
+def is_users_followed(comment, followed_users):
+    followed_user_id = str(comment['user_id'])
+    return followed_user_id in followed_users
+
+
+def is_user_liked(comment):
+    liked = 'comment_like_count'
+    return liked in comment and comment[liked] > 0
 
 
 def main():
@@ -62,15 +62,13 @@ def main():
     author_followers = bot.get_user_followers(media_owner)
     comments = bot.get_media_comments_all(media_id=media_id)
 
-    print('end of fetching data')
-
     finalists = []
 
     for comment in comments:
-        if not is_user_liked(comment):
-            continue
+        user_followed = is_users_followed(comment, author_followers)
+        user_liked = is_user_liked(comment)
 
-        if not is_users_followed(comment, author_followers):
+        if not (user_followed and user_liked):
             continue
 
         if not is_user_tag_friends(bot, comment):
@@ -79,8 +77,8 @@ def main():
         username = comment['user']['username']
         finalists.append(username)
 
-    bot.logout()
     winners = set(finalists)
+    bot.logout()
     print(winners)
 
 
